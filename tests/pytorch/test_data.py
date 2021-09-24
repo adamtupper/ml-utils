@@ -11,7 +11,7 @@ class ToyDataset(Dataset):
 
     def __init__(self):
         self.X = np.ones((10, 3))
-        self.y = np.ones(10, dtype=np.int)
+        self.y = np.ones(10, dtype=int)
 
     def __getitem__(self, idx):
         return self.X[idx, :], self.y[idx]

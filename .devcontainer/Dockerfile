@@ -19,5 +19,8 @@ RUN mkdir -p /home/docker/workspace/
 RUN sudo apt-get update && \
     sudo apt-get install -y git python3 python3-pip
 
+# Install virtualenv
+RUN pip3 install virtualenv
+
 # Set the working directory
 WORKDIR /home/docker/workspace/

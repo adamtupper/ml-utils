@@ -11,3 +11,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 - Add custom [Dataset](https://pytorch.org/docs/stable/data.html?highlight=dataset#torch.utils.data.Dataset) classes (`DatasetFromSubset`, `PartiallyLabelledDatasetFromSubset`) for creating fully/partially labelled datasets from [Subsets](https://pytorch.org/docs/stable/data.html?highlight=subset#torch.utils.data.Subset).
+- Add partially labelled CIFAR10/100 PyTorch Lightning data module for semi-supervised learning.

@@ -57,7 +57,7 @@ def main(args):
     runs = api.runs(os.path.join(args.entity, args.project))
 
     for run in runs:
-        root_dir = os.path.join(args.project, run.name)
+        root_dir = os.path.join(args.output_dir, run.name)
         os.makedirs(root_dir)
 
         # Download run metrics

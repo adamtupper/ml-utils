@@ -73,7 +73,7 @@ def main(args):
         # Download run configs
         # .config contains the hyperparameters, we remove special values that start with _
         config = {k: v for k, v in run.config.items() if not k.startswith("_")}
-        config_df = pd.DataFrame(config)
+        config_df = pd.DataFrame([config])
         config_df.to_csv(os.path.join(root_dir, "config.csv"))
 
         # Download run summaries

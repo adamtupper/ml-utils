@@ -1,6 +1,7 @@
 from typing import Dict, List, Union
 
 import pytorch_lightning as pl
+import torch
 from torch.utils.data import DataLoader, random_split
 from torchvision import datasets, transforms
 
@@ -10,11 +11,14 @@ from mlutils.pytorch.data import DatasetFromSubset, PartiallyLabelledDatasetFrom
 class CIFARDataModule(pl.LightningDataModule):
     """PyTorch Lightning CIFAR100 data module."""
 
-    def __init__(self, batch_size, batch_size_test, dataset_dir, version="CIFAR10"):
+    def __init__(
+        self, batch_size, batch_size_test, dataset_dir, seed=None, version="CIFAR10"
+    ):
         super().__init__()
         self.batch_size = batch_size
         self.batch_size_test = batch_size_test
         self.dataset_dir = dataset_dir
+        self.seed = seed
 
         assert version in ("CIFAR10", "CIFAR100")
         self.CIFAR = datasets.CIFAR10 if version == "CIFAR10" else datasets.CIFAR100
@@ -46,7 +50,14 @@ class CIFARDataModule(pl.LightningDataModule):
         )
 
         train_set = self.CIFAR(self.dataset_dir, train=True)
-        train_set, val_set = random_split(train_set, [45000, 5000])
+        if self.seed:
+            train_set, val_set = random_split(
+                train_set,
+                [45000, 5000],
+                generator=torch.Generator().manual_seed(self.seed),
+            )
+        else:
+            train_set, val_set = random_split(train_set, [45000, 5000])
 
         self.cifar_train = DatasetFromSubset(train_set, transform=transforms_train)
         self.cifar_val = DatasetFromSubset(val_set, transform=transforms_test)
@@ -87,9 +98,10 @@ class PartiallyLabelledCIFARDataModule(CIFARDataModule):
         batch_size_test,
         dataset_dir,
         proportion_labelled,
+        seed=None,
         version="CIFAR10",
     ):
-        super().__init__(batch_size, batch_size_test, dataset_dir, version)
+        super().__init__(batch_size, batch_size_test, dataset_dir, seed, version)
         self.proportion_labelled = proportion_labelled
 
     def setup(self, stage) -> None:
@@ -114,7 +126,14 @@ class PartiallyLabelledCIFARDataModule(CIFARDataModule):
         )
 
         train_set = self.CIFAR(self.dataset_dir, train=True)
-        train_set, val_set = random_split(train_set, [45000, 5000])
+        if self.seed:
+            train_set, val_set = random_split(
+                train_set,
+                [45000, 5000],
+                generator=torch.Generator().manual_seed(self.seed),
+            )
+        else:
+            train_set, val_set = random_split(train_set, [45000, 5000])
 
         self.cifar_train = PartiallyLabelledDatasetFromSubset(
             train_set,

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- `seed` argument for CIFAR data modules to ensure reproducibility in train/validation set splits.
+- `seed` argument for CIFAR data modules to ensure reproducibility in train/validation set splits, and in the selection of labelled/unlabelled examples (for partially labelled data modules).
 
 ### Fixed
 

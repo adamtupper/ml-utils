@@ -139,6 +139,7 @@ class PartiallyLabelledCIFARDataModule(CIFARDataModule):
             train_set,
             transform=transforms_train,
             proportion_labelled=self.proportion_labelled,
+            seed=self.seed,
         )
         self.cifar_val = DatasetFromSubset(val_set, transform=transforms_test)
         self.cifar_test = self.CIFAR(

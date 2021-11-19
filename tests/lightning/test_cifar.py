@@ -6,6 +6,7 @@ from pytorch_lightning.utilities.seed import seed_everything
 from torchvision import datasets
 
 from mlutils.lightning.cifar import PartiallyLabelledCIFARDataModule
+from mlutils.pytorch.data import DatasetFromSubset
 
 TEMP_DIR_PATH = "tests/tmpdir"
 
@@ -172,3 +173,19 @@ class TestPartiallyLabelledCIFARDataModule:
 
         # Check the validation sets are equal
         assert dm1.cifar_val.subset.indices == dm2.cifar_val.subset.indices
+
+    def test_store_labelled_versions_of_unlabelled_train_data(self, tmpdir):
+        cifar10_dm = PartiallyLabelledCIFARDataModule(
+            batch_size=1,
+            batch_size_test=16,
+            dataset_dir=tmpdir,
+            proportion_labelled=0.9,
+        )
+        cifar10_dm.prepare_data()
+        cifar10_dm.setup(stage=None)
+
+        assert type(cifar10_dm.cifar_train_ul_set) == DatasetFromSubset
+        assert len(cifar10_dm.cifar_train_ul_set.subset.indices) == 4500
+        assert len(cifar10_dm.train_ul_set_dataloader()) == len(
+            cifar10_dm.cifar_train_ul_set
+        )

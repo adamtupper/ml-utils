@@ -50,6 +50,9 @@ class PartiallyLabelledDatasetFromSubset(Dataset):
             self.labelled_indices = np.random.choice(
                 range(len(self.subset)), num_labels, replace=False
             )
+        self.unlabelled_indices = np.setdiff1d(
+            range(len(self.subset)), self.labelled_indices
+        )
 
     def __getitem__(self, index):
         x, y = self.subset[index]

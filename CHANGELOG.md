@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - `seed` argument for CIFAR data modules to ensure reproducibility in train/validation set splits, and in the selection of labelled/unlabelled examples (for partially labelled data modules).
+- Store labelled versions of the unlabelled examples in the train set (accessible via `PartiallyLabelledCIFARDataModule.cifar_train_ul_set` or as a DataLoader via `PartiallyLabelledCIFARDataModule.train_ul_set_dataloader()`) for partially labelled data modules (for debugging and evaluation).
 
 ### Fixed
 

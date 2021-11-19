@@ -2,7 +2,7 @@ from typing import Dict, List, Union
 
 import pytorch_lightning as pl
 import torch
-from torch.utils.data import DataLoader, random_split
+from torch.utils.data import DataLoader, Subset, random_split
 from torchvision import datasets, transforms
 
 from mlutils.pytorch.data import DatasetFromSubset, PartiallyLabelledDatasetFromSubset
@@ -145,3 +145,19 @@ class PartiallyLabelledCIFARDataModule(CIFARDataModule):
         self.cifar_test = self.CIFAR(
             self.dataset_dir, train=False, transform=transforms_test
         )
+
+        # For post-training evaluation/debugging purposes, keep a labelled
+        # version of the set of unlabelled examples in the train set
+        self.cifar_train_ul_set = Subset(
+            self.cifar_train, self.cifar_train.unlabelled_indices
+        )
+        self.cifar_train_ul_set = DatasetFromSubset(
+            self.cifar_train_ul_set, transform=transforms_test
+        )
+
+    def train_ul_set_dataloader(self) -> Union[DataLoader, List[DataLoader]]:
+        """Create test dataloader."""
+        cifar_train_ul = DataLoader(
+            self.cifar_train_ul_set, batch_size=self.batch_size, num_workers=4
+        )
+        return cifar_train_ul

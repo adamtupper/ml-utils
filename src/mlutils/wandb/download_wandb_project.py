@@ -58,7 +58,9 @@ def main(args):
 
     for run in runs:
         root_dir = os.path.join(args.output_dir, run.name)
-        os.makedirs(root_dir)
+
+        if not os.path.exists(root_dir):
+            os.makedirs(root_dir)
 
         # Download run metrics
         history = run.scan_history()
@@ -91,7 +93,7 @@ def main(args):
 
         # Download files
         for file in run.files():
-            file.download(root=root_dir)
+            file.download(root=root_dir, replace=True)
 
 
 def run():

@@ -39,7 +39,11 @@ def parse_args(args):
         "--project", "-p", help="the name of the project.", type=str, required=True
     )
     parser.add_argument(
-        "--output-dir", "-o", help="the path to the dataset", type=str, required=True
+        "--output-dir",
+        "-o",
+        help="the directory to export the data to",
+        type=str,
+        required=True,
     )
 
     return parser.parse_args(args)
@@ -57,7 +61,7 @@ def main(args):
     runs = api.runs(os.path.join(args.entity, args.project))
 
     for run in runs:
-        root_dir = os.path.join(args.output_dir, run.name)
+        root_dir = os.path.join(args.output_dir, run.id)
 
         if not os.path.exists(root_dir):
             os.makedirs(root_dir)

@@ -70,7 +70,7 @@ def main(args):
             print(f"Downloading files for Run {run.id}...", end=" ")
 
             # Save timestamp
-            with open("export_timestamp.txt", "w") as f:
+            with open(os.path.join(root_dir, "export_timestamp.txt"), "w") as f:
                 now = datetime.now()
                 f.write(now.strftime("%d/%m/%Y %H:%M:%S"))
 

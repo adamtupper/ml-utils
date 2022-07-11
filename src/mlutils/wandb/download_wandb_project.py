@@ -4,6 +4,7 @@ Usage:
     wandb-dl -e ENTITY -p PROJECT -o OUTPUT_DIRECTORY
 """
 import argparse
+import datetime
 import json
 import os
 import sys
@@ -66,38 +67,51 @@ def main(args):
         if not os.path.exists(root_dir):
             os.makedirs(root_dir)
 
-        # Download run metrics
-        history = run.scan_history()
-        metrics_df = pd.DataFrame(history)
-        metrics_df.to_csv(os.path.join(root_dir, "metrics.csv"))
+            print("Downloading files for Run {run}...", end=" ")
 
-        # Download system metrics
-        history = run.history(samples=NUM_SAMPLES, stream="events")
-        system_metrics_df = pd.DataFrame(history)
-        system_metrics_df.to_csv(os.path.join(root_dir, "system_metrics.csv"))
+            # Save timestamp
+            with open("export_timestamp.txt", "w") as f:
+                now = datetime.now()
+                f.write(now.strftime("%d/%m/%Y %H:%M:%S"))
 
-        # Download run configs
-        # .config contains the hyperparameters, we remove special values that start with _
-        config = {k: v for k, v in run.config.items() if not k.startswith("_")}
-        config_df = pd.DataFrame([config])
-        config_df.to_csv(os.path.join(root_dir, "config.csv"))
+            # Download run metrics
+            history = run.scan_history()
+            metrics_df = pd.DataFrame(history)
+            metrics_df.to_csv(os.path.join(root_dir, "metrics.csv"))
 
-        # Download run summaries
-        summary_df = pd.DataFrame([run.summary._json_dict])
-        summary_df.to_csv(os.path.join(root_dir, "summary.csv"))
+            # Download system metrics
+            history = run.history(samples=NUM_SAMPLES, stream="events")
+            system_metrics_df = pd.DataFrame(history)
+            system_metrics_df.to_csv(os.path.join(root_dir, "system_metrics.csv"))
 
-        # Download artifacts
-        for artifact in run.logged_artifacts():
-            artifact.download(root=os.path.join(root_dir, "artifacts", artifact.name))
-            metadata_path = os.path.join(
-                root_dir, "artifacts", artifact.name, "metadata.json"
-            )
-            with open(metadata_path, "w") as f:
-                json.dump(artifact.metadata, f)
+            # Download run configs
+            # .config contains the hyperparameters, we remove special values that start with _
+            config = {k: v for k, v in run.config.items() if not k.startswith("_")}
+            config_df = pd.DataFrame([config])
+            config_df.to_csv(os.path.join(root_dir, "config.csv"))
 
-        # Download files
-        for file in run.files():
-            file.download(root=root_dir, replace=True)
+            # Download run summaries
+            summary_df = pd.DataFrame([run.summary._json_dict])
+            summary_df.to_csv(os.path.join(root_dir, "summary.csv"))
+
+            # Download artifacts
+            for artifact in run.logged_artifacts():
+                artifact.download(
+                    root=os.path.join(root_dir, "artifacts", artifact.name)
+                )
+                metadata_path = os.path.join(
+                    root_dir, "artifacts", artifact.name, "metadata.json"
+                )
+                with open(metadata_path, "w") as f:
+                    json.dump(artifact.metadata, f)
+
+            # Download files
+            for file in run.files():
+                file.download(root=root_dir, replace=True)
+
+            print("Done!")
+        else:
+            print(f"Run {run} already downloaded.")
 
 
 def run():

@@ -67,7 +67,7 @@ def main(args):
         if not os.path.exists(root_dir):
             os.makedirs(root_dir)
 
-            print("Downloading files for Run {run}...", end=" ")
+            print(f"Downloading files for Run {run.id}...", end=" ")
 
             # Save timestamp
             with open("export_timestamp.txt", "w") as f:
@@ -111,7 +111,7 @@ def main(args):
 
             print("Done!")
         else:
-            print(f"Run {run} already downloaded.")
+            print(f"Run {run.id} already downloaded.")
 
 
 def run():

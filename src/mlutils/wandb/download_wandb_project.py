@@ -4,10 +4,10 @@ Usage:
     wandb-dl -e ENTITY -p PROJECT -o OUTPUT_DIRECTORY
 """
 import argparse
-import datetime
 import json
 import os
 import sys
+from datetime import datetime
 
 import pandas as pd
 import wandb
